@@ -3,48 +3,73 @@ import java.awt.*;
 public class gbc extends GridBagConstraints {
     /** x/y=Rel, gw/gh = 1, wx/wy = 0, a = C, f = N */
     public gbc() { }
+    /** insets all sides */
+    public gbc i(int x) {
+        insets = new Insets(x,x,x,x);
+        return this;
+    }
+    /** insets trailing x only */
+    public gbc ix(int x) {
+        insets = new Insets(0,0,0,x);
+        return this;
+    }
+    /** insets trailing y only */
+    public gbc iy(int x) {
+        insets = new Insets(0,0,x,0);
+        return this;
+    }
+    /** insets trailing x, y only */
+    public gbc iboth(int x) {
+        insets = new Insets(0,0,x,x);
+        return this;
+    }
     /** position (-1=rel) */
     public gbc p(int x, int y) {
-        insets = new Insets(5,5,5,5);
         gridx = x;
         gridy = y;
         return this;
     }
+    /** position relative */
+    public gbc prel() {
+        gridx = RELATIVE;
+        gridy = RELATIVE;
+        return this;
+    }
     /** size (-1=rel, 0=rem, 1..n) */
-    public gbc size(int x, int y) {
+    public gbc s(int x, int y) {
         gridwidth = x;
         gridheight = y;
         return this;
     }
     /** size remainder, 1 */
     public gbc sx() {
-        return size(REMAINDER,1);
+        return s(REMAINDER,1);
     }
     /** size 1, remainder */
     public gbc sy() {
-        return size(1,REMAINDER);
+        return s(1,REMAINDER);
     }
     /** size remainder, remainder */
     public gbc sboth() {
-        return size(REMAINDER,REMAINDER);
+        return s(REMAINDER,REMAINDER);
     }
     /** weight */
-    public gbc weight(double x, double y) {
+    public gbc w(double x, double y) {
         weightx = x;
         weighty = y;
         return this;
     }
     /** weight 1, 0 */
     public gbc wx() {
-        return weight(1,0);
+        return w(1,0);
     }
     /** weight 0, 1 */
     public gbc wy() {
-        return weight(0,1);
+        return w(0,1);
     }
     /** weight 1, 1 */
     public gbc wboth() {
-        return weight(1,1);
+        return w(1,1);
     }
     /** anchor */
     public gbc anchor(int v) {

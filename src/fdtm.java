@@ -7,15 +7,16 @@ public class fdtm extends AbstractTableModel {
     private final Collection<fd> values;
     private List<fd> list;
 
-    public fdtm(Collection<fd> values, boolean ok) {
+    public fdtm(Collection<fd> values) {
         this.values = values;
-        update(ok);
+        this.list = Collections.emptyList();
     }
 
-    public void update(boolean ok) {
-        System.out.println("update " + ok);
-        list = values.stream().filter(v -> ok || !v.ok()).collect(Collectors.toList());
+    public long update(boolean ok, boolean left, boolean right, boolean conflict) {
+        list = values.stream().filter(v -> v.matches(ok, left, right, conflict)).collect(Collectors.toList());
+        long t = list.stream().mapToLong(v -> v.size()).sum();
         fireTableDataChanged();
+        return t;
     }
 
     @Override
@@ -25,14 +26,25 @@ public class fdtm extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 2;
+        return 3;
+    }
+
+    @Override
+    public Class<?> getColumnClass(int c) {
+        switch (c) {
+            case 0: return String.class;
+            case 1: return Long.class;
+            case 2: return String.class;
+            default: throw new RuntimeException();
+        }
     }
 
     @Override
     public String getColumnName(int c) {
         switch (c) {
             case 0: return "file";
-            case 1: return "diff";
+            case 1: return "size";
+            case 2: return "diff";
             default: throw new RuntimeException();
         }
     }
@@ -41,8 +53,9 @@ public class fdtm extends AbstractTableModel {
     public Object getValueAt(int r, int c) {
         fd v = list.get(r);
         switch (c) {
-            case 0: return v.k;
-            case 1: return v.d();
+            case 0: return v.name;
+            case 1: return Long.valueOf(v.size());
+            case 2: return v.difference();
             default: throw new RuntimeException();
         }
     }
